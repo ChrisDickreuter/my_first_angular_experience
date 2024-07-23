@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { RouterLink, RouterOutlet } from "@angular/router";
 import { HomeComponent } from "./home/home.component";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [RouterModule, HomeComponent],
+  imports: [RouterLink, RouterOutlet, HomeComponent],
   template: `
     <main>
       <a [routerLink]="['/']">
