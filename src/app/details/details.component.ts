@@ -3,11 +3,12 @@ import { CommonModule } from "@angular/common";
 import { ActivatedRoute } from "@angular/router";
 import { HousingService } from "../housing.service";
 import { Housinglocation } from "../housinglocation";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-details",
   standalone: true,
-  imports: [],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <article>
       <img
@@ -32,6 +33,21 @@ import { Housinglocation } from "../housinglocation";
           </li>
         </ul>
       </section>
+      <section class="listing-apply">
+        <h2 class="section-heading">Apply now to live here</h2>
+        <form [formGroup]="applyForm" (submit)="submitApplication()">
+          <label for="firstName">First name</label>
+          <input id="firstName" type="text" formControlName="firstName" />
+
+          <label for="lastName">Last name</label>
+          <input id="lastName" type="text" formControlName="lastName" />
+
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" />
+
+          <button type="submit" class="primary">Apply now</button>
+        </form>
+      </section>
     </article>
   `,
   styleUrl: "./details.component.scss",
@@ -41,9 +57,23 @@ export class DetailsComponent {
   housingService = inject(HousingService);
   housingLocation: Housinglocation | undefined;
 
+  applyForm = new FormGroup({
+    firstName: new FormControl(""),
+    lastName: new FormControl(""),
+    email: new FormControl(""),
+  });
+
   constructor() {
     const housingLocationId = Number(this.route.snapshot.params["id"]);
     this.housingLocation =
       this.housingService.getHousingLocationById(housingLocationId);
+  }
+
+  submitApplication() {
+    this.housingService.submitApplication(
+      this.applyForm.value.firstName ?? "",
+      this.applyForm.value.lastName ?? "",
+      this.applyForm.value.email ?? ""
+    );
   }
 }
